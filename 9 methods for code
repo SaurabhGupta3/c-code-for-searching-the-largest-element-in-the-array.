@@ -1,0 +1,204 @@
+c++ code...
+
+#include<bits/stdc++.h>
+using namespace std;
+
+int findLargest(vector<int> arr, int n) {
+	//by shorting(stl);
+	sort(arr.begin(), arr.end());
+	return arr[n-1];
+}
+
+int findLargest2(vector<int> arr, int n) {
+	//by bubble shorting;
+    //pushes the maximum element to the last by adjacent swaping...
+    int didSwap = 0;
+    for(int i=0; i<n-1; i++) {
+    	for(int j=0; j<n-1; j++) {
+    		if(arr[j] > arr[j+1]) {
+    			swap(arr[j], arr[j+1]);
+    			didSwap = 1;
+    		}
+    	}
+    	if(didSwap == 0) {
+    		return arr[n-1];
+    	}
+
+    }
+    return arr[n-1];
+}
+
+int findLargest3(vector<int> arr, int n) {
+	//by selection sort;
+	//select minimum and swap;
+	for(int i=0; i<n-1; i++) {
+		int mini = i;
+		for(int j=i; j<n; j++) {
+			if(arr[j] < arr[mini]) {
+				mini = j;
+			}
+		}
+		swap(arr[i], arr[mini]);
+	}
+	return arr[n-1];
+}
+
+int findLargest4(vector<int> arr, int n) {
+	//by insertion short...
+	//takes an element and place it in its correct order...
+	for(int i=0; i<n; i++) {
+		int j = i;
+		while(j>0 && arr[j-1] > arr[j]) {
+			swap(arr[j-1], arr[j]);
+			j--;
+		}
+	}
+	return arr[n-1];
+}
+
+void merge(vector<int> &arr, int low, int mid, int high) {
+	vector<int> temp;
+	int left = low;
+	int right = mid+1;
+	while(left <= mid && right <= high) {
+		if(arr[left] <= arr[right]) {
+			temp.push_back(arr[left]);
+			left++;
+		} else {
+			temp.push_back(arr[right]);
+			right++;
+		}
+	}
+	while(left<=mid) {
+		temp.push_back(arr[left]);
+		left++;
+	}
+	while(right<=high) {
+		temp.push_back(arr[right]);
+		right++;
+	}
+	for(int i=low; i<=high; i++) {
+		arr[i] = temp[i-low];
+	}
+}
+//for divide...
+void mergeShort(vector<int> &arr, int low, int high) {
+	if(low >= high) return;
+	int mid = (low + high) / 2;
+	mergeShort(arr, low, mid);
+	mergeShort(arr, mid+1, high);
+	merge(arr, low, mid, high);
+
+}
+int findLargest5(vector<int> arr, int n) {
+	//by merge sort...
+	//divide and merge...
+	mergeShort(arr, 0, n-1);
+	return arr[n-1];
+
+ 
+}
+
+int partition(vector<int> &arr, int low, int high) {
+	int pivot = arr[low];
+	int i = low;
+	int j = high;
+	while(i < j) {
+		while(arr[i] <= pivot && i < high) {
+			i++;
+		}
+		while(arr[j] >= pivot && j > low) {
+			j--;
+		}
+		if(i < j) {
+			swap(arr[i], arr[j]);
+		}
+	}
+	swap(arr[low], arr[j]);
+	return j;
+
+}
+void quickshort(vector<int> &arr, int low, int high) {
+	if(low < high) {
+		int pIndex = partition(arr, low, high);
+		quickshort(arr, low, pIndex-1);
+		quickshort(arr, pIndex+1, high);
+	}
+}
+int findLargest6(vector<int> arr, int n) {
+	//by quick sort...
+	//pick a pivot and place it in its correct order(place where when the array sorted);
+	//then put smaller on left & larger on right of pivot...
+	quickshort(arr, 0, n-1);
+	return arr[n-1];
+}
+
+int findLargest7(vector<int> arr, int n) {
+	//optimal approach;
+	int max = arr[0];
+	for(int i=0; i<n; i++) {
+		if(arr[i] > max) {
+			max = arr[i];
+		}
+	}
+	return max;
+
+}
+
+void recBubbleShort(vector<int> &arr, int n) {
+    
+    int didSwap = 0;
+	if(n == 1) return;
+	for(int j=0; j<n-1; j++) {
+		if(arr[j] > arr[j+1]) {
+			swap(arr[j], arr[j+1]);
+			didSwap = 1;
+		}
+	}
+	if(didSwap == 0) return;
+	recBubbleShort(arr, n-1);
+}
+int findLargest8(vector<int> arr, int n) {
+	//recursive bubble...
+	recBubbleShort(arr, n);
+	return arr[n-1];
+}
+
+void recInsertionShort(vector<int> &arr, int i, int n) {
+	if(i == n) return;
+     int j = i;
+     while(j > 0 && arr[j-1] > arr[j]) {
+     	swap(arr[j-1], arr[j]);
+     	j--;
+     }
+     recInsertionShort(arr, i+1, n);
+}
+int findLargest9(vector<int> arr, int n) {
+	// recursive insertion...
+	recInsertionShort(arr, 0, n);
+	return arr[n-1];
+}
+int main() {
+    
+    vector<int> arr = {10, 8, 38, 3, 11, 17, 18};
+    int n = arr.size();
+    cout << "0->" << findLargest(arr, n) << endl;
+
+    cout << "1->" << findLargest2(arr, n) << endl;
+
+    cout << "2->" << findLargest3(arr, n) << endl;
+  
+    cout << "3->" << findLargest4(arr, n) << endl;
+
+    cout << "4->" << findLargest5(arr, n) << endl;
+
+    cout << "5->" << findLargest6(arr, n) << endl;
+
+    cout << "6->" << findLargest7(arr, n) << endl;
+
+    cout << "7->" << findLargest8(arr, n) << endl;
+
+    cout << "8->" << findLargest9(arr, n) << endl;
+
+	return 0; 
+}
